@@ -7,7 +7,7 @@
 #define FILE
 
 class File {
-private:
+protected:
     char *fileName;
 
 public:

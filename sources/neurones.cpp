@@ -8,7 +8,24 @@ float nbrAleatoire() {
     return distribution(generator);
 }
 
-Neurone::Neurone(vector<int> model) {
+Neurone::Neurone(vector<int> model) : File() {
+    for (int largeur : model) {
+        if (largeur < 1)
+            cout << "ERROR : bad model ask." << endl;
+        vector<float> couche;
+        
+        for (int i = 0; i < largeur; i++) {
+            couche.push_back(nbrAleatoire());
+        }
+        reseau.push_back(couche);
+    }
+}
+
+Neurone::Neurone(char *importReseau) : File(importReseau) {
+    chargeModel();
+}
+
+Neurone::Neurone(vector<int> model, char *importReseau) : File(importReseau) {
     for (int largeur : model) {
         if (largeur < 1)
             cout << "ERROR : bad model ask." << endl;
@@ -31,4 +48,20 @@ void Neurone::showModel() {
         }
         cout << endl;
     }
+}
+
+vector< vector<float> > Neurone::getModel() {
+    return reseau;
+}
+
+void Neurone::chargeModel(vector< vector<float> > newReseau) {
+    reseau = newReseau;
+}
+
+void Neurone::chargeModel() {
+    reseau = read();
+}
+
+void Neurone::saveModel() {
+    write(reseau);
 }
