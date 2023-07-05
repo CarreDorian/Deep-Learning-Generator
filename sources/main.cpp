@@ -9,11 +9,10 @@ int main() {
     test.push_back(5);
     Neurone Einstein(test, "test.txt");
     Einstein.showModel();
-    cout << endl;
+    // Einstein.saveModel();
 
     Einstein.chargeModel();
     Einstein.showModel();
-    cout << endl;
 
     test.push_back(5);
     test.push_back(2);
@@ -21,7 +20,6 @@ int main() {
 
     Neurone EinsteinBis(test);
     EinsteinBis.showModel();
-    cout << endl;
     
     EinsteinBis.chargeModel(Einstein.getModel());
     EinsteinBis.showModel();

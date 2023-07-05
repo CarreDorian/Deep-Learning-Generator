@@ -9,13 +9,25 @@ float nbrAleatoire() {
 }
 
 Neurone::Neurone(vector<int> model) : File() {
-    for (int largeur : model) {
-        if (largeur < 1)
-            cout << "ERROR : bad model ask." << endl;
-        vector<float> couche;
+    if (model.size() < 2) {
+        cout << "ERROR : bad model ask. Too fiew level." << endl;
+        return;
+    }
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<float> > couche;
         
         for (int i = 0; i < largeur; i++) {
-            couche.push_back(nbrAleatoire());
+            vector<float> neurone;
+            for (int j = 0; j < entree; j++) {
+                neurone.push_back(nbrAleatoire());
+            }
+            couche.push_back(neurone);
         }
         reseau.push_back(couche);
     }
@@ -26,35 +38,53 @@ Neurone::Neurone(char *importReseau) : File(importReseau) {
 }
 
 Neurone::Neurone(vector<int> model, char *importReseau) : File(importReseau) {
-    for (int largeur : model) {
-        if (largeur < 1)
-            cout << "ERROR : bad model ask." << endl;
-        vector<float> couche;
+    if (model.size() < 2) {
+        cout << "ERROR : bad model ask. Too fiew level." << endl;
+        return;
+    }
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<float> > couche;
         
         for (int i = 0; i < largeur; i++) {
-            couche.push_back(nbrAleatoire());
+            vector<float> neurone;
+            for (int j = 0; j < entree; j++) {
+                neurone.push_back(nbrAleatoire());
+            }
+            couche.push_back(neurone);
         }
         reseau.push_back(couche);
     }
 }
 
 void Neurone::showModel() {
-    int count = 0;
-
-    for (auto largeur : reseau) {
-        cout << "W" << ++count;
-        for (float poid : largeur) {
-            cout << '\t' << poid;
+    int count = 1;
+    
+    for (vector< vector<float> > coucheNeurones : reseau) {
+        cout << "W" << count++;
+        for (vector<float> couche : coucheNeurones) {
+            cout << "\t";
+            string str = "";
+            for (float neurone : couche) {
+                str += to_string(neurone) + ";";
+            }
+            str.erase(str.size() - 1); 
+            cout << str << endl;
         }
-        cout << endl;
     }
+    cout << endl;
 }
 
-vector< vector<float> > Neurone::getModel() {
+vector< vector< vector<float> > > Neurone::getModel() {
     return reseau;
 }
 
-void Neurone::chargeModel(vector< vector<float> > newReseau) {
+void Neurone::chargeModel(vector< vector< vector<float> > > newReseau) {
     reseau = newReseau;
 }
 
@@ -65,3 +95,22 @@ void Neurone::chargeModel() {
 void Neurone::saveModel() {
     write(reseau);
 }
+
+vector<float> Neurone::forward(vector<float> entree) {
+    // if (entree.size() != reseau[0].size()) {
+    //     cout << "ERROR : Bad forward input. take " << reseau[0].size() << ", get " << entree.size() << "." << endl;
+    //     return vector<float>();
+    // }
+    // vector<float> resultCouche;
+
+    // for (vector<float> poids : reseau) {
+    //     for (float entreeNeurone : entree) {
+    //         for (poid : poids) {
+    //             entreeNeurone
+    //         }
+    //     }
+    // }
+    return vector<float>();
+}
+
+void Neurone::backward() {}

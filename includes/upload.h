@@ -14,8 +14,8 @@ public:
     File();
     File(char *newFileName);
     void chargeFileName(char *newFileName);
-    vector< vector<float> > read();
-    void write(vector< vector<float> > poids);
+    vector< vector< vector<float> > > read();
+    void write(vector< vector< vector<float> > > poids);
 };
 
 #endif
