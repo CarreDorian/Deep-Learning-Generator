@@ -1,113 +1,17 @@
 #include "../includes/neurones.h"
 
-double nbrAleatoire() {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937_64 generator(seed);
-    std::uniform_real_distribution<double> distribution(0.0001f, 10000.0f);
-
-    return distribution(generator);
-}
-
-Neurone::Neurone(vector<int> model) : File() {
-    if (model.size() < 2) {
-        cout << "ERROR : bad model ask. Too fiew level." << endl;
-        return;
-    }
-    for (int step = 0; step < model.size() - 1; step++) {
-        int largeur = model[step + 1];
-        int entree = model[step];
-        if (largeur < 1) {
-            cout << "ERROR : bad model ask. Too few neurons" << endl;
-            return;
-        }
-        vector< vector<double> > couche;
-        
-        for (int i = 0; i < largeur; i++) {
-            vector<double> neurone;
-            for (int j = 0; j < entree; j++) {
-                neurone.push_back(nbrAleatoire());
-            }
-            couche.push_back(neurone);
-        }
-        reseau.push_back(couche);
-    }
-}
-
-Neurone::Neurone(char *importReseau) : File(importReseau) {
-    chargeModel();
-}
-
-Neurone::Neurone(vector<int> model, char *importReseau) : File(importReseau) {
-    if (model.size() < 2) {
-        cout << "ERROR : bad model ask. Too fiew level." << endl;
-        return;
-    }
-    for (int step = 0; step < model.size() - 1; step++) {
-        int largeur = model[step + 1];
-        int entree = model[step];
-        if (largeur < 1) {
-            cout << "ERROR : bad model ask. Too few neurons" << endl;
-            return;
-        }
-        vector< vector<double> > couche;
-        
-        for (int i = 0; i < largeur; i++) {
-            vector<double> neurone;
-            for (int j = 0; j < entree; j++) {
-                neurone.push_back(nbrAleatoire());
-            }
-            couche.push_back(neurone);
-        }
-        reseau.push_back(couche);
-    }
-}
-
-void Neurone::showModel() {
-    int count = 1;
-    
-    for (vector< vector<double> > coucheNeurones : reseau) {
-        cout << "W" << count++;
-        for (vector<double> couche : coucheNeurones) {
-            cout << "\t";
-            string str = "";
-            for (double neurone : couche) {
-                str += to_string(neurone) + ";";
-            }
-            str.erase(str.size() - 1); 
-            cout << str << endl;
-        }
-    }
-    cout << endl;
-}
-
-vector< vector< vector<double> > > Neurone::getModel() {
-    return reseau;
-}
-
-void Neurone::chargeModel(vector< vector< vector<double> > > newReseau) {
-    reseau = newReseau;
-}
-
-void Neurone::chargeModel() {
-    reseau = read();
-}
-
-void Neurone::saveModel() {
-    write(reseau);
-}
-
 double Neurone::sigmoide(double x) {
-    if (x > 709.0)
-        return 1.0;
-    else if (x < -709.0) 
-        return 0.0;
+    if (x > 709)
+        return 1;
+    else if (x < -709) 
+        return 0;
     else
-        return 1.0 / (1.0 + exp(-x));
+        return 1 / (1 + exp(-x));
 }
 
 double Neurone::sigmoid_derivee(double x) {
-    double sigmoid = sigmoid(x);
-    return sigmoid * (1.0 - sigmoid);
+    double sigmoide = Neurone::sigmoide(x);
+    return sigmoide * (1 - sigmoide);
 }
 
 double Neurone::calculForward(vector<double> neurone, vector<double> entree) {
@@ -132,7 +36,7 @@ vector<double> Neurone::forward(vector<double> entree) {
     for (vector< vector<double> > couche : reseau) {
         resultCouche.push_back(vector<double> ());
         for (vector<double> neurone : couche) {
-            resultCouche[avancement].push_back(calculForward(neurone, entree));
+            resultCouche[avancement].push_back(Neurone::calculForward(neurone, entree));
         }
         entree = resultCouche[avancement];
     }
@@ -150,13 +54,39 @@ void Neurone::backward(vector<double> sortieAttendu) {
 
         vector<double> erreurDelta;
         for (int index = 0; index < erreur.size(); index++) {
-            erreurDelta.push_back(erreur[index] - sigmoid_derivee(resultCouche[indexResult][index]));
+            erreurDelta.push_back(erreur[index] - Neurone::sigmoid_derivee(resultCouche[indexResult][index]));
         }
 
         sortieAttendu = erreurDelta;
+        --indexResult;
 
-        for (int index = 0; index < reseau[avancement]; index++) {
-            reseau[avancement][index] += resultCouche[--indexResult][index] * erreurDelta[index];
+        for (int indexNeurone = 0; indexNeurone < reseau[avancement].size(); indexNeurone++) {
+            for (int index = 0; index < reseau[avancement][indexNeurone].size(); index++) {
+                reseau[avancement][indexNeurone][index] += resultCouche[indexResult][index] * erreurDelta[indexNeurone];
+            }
         }
     }
 }
+
+vector<double> Neurone::prediction(vector<double> entree) {
+    return forward(entree);
+}
+
+void Neurone::entrainement(vector<double> entree, vector<double> sortieAttendu) {
+    forward(entree);
+    backward(sortieAttendu);
+}
+
+void Neurone::entrainement(vector< vector<double> > entree, vector< vector<double> > sortieAttendu) {
+    if (entree.size() != sortieAttendu.size()) {
+        cout << "ERROR : not good training input : take " << entree.size() << " input, and " << sortieAttendu.size() << " output correction" << endl;
+        return;
+    }
+
+    for (int index = 0; index < entree.size(); index++) {
+        forward(entree[index]);
+        backward(sortieAttendu[index]);
+    }
+    cout << "end training" << endl;
+}
+
