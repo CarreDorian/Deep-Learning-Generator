@@ -8,11 +8,12 @@
 #ifndef NEURONE
 #define NEURONE
 
-float nbrAleatoire();
+double nbrAleatoire();
 
 class Neurone : public File {
 protected:
-    vector< vector< vector<float> > > reseau;
+    vector< vector< vector<double> > > reseau;
+    vector< vector<double> > resultCouche;
 
     using File::read;
     using File::write;
@@ -22,11 +23,14 @@ public:
     Neurone(char *importReseau);
     Neurone(vector<int> model, char *importReseau);
     void showModel();
-    vector< vector< vector<float> > > getModel();
-    void chargeModel(vector< vector< vector<float> > > newReseau);
+    vector< vector< vector<double> > > getModel();
+    void chargeModel(vector< vector< vector<double> > > newReseau);
     void chargeModel();
     void saveModel();
-    vector<float> forward(vector<float> entree);
+    double sigmoide(double x);
+    double sigmoid_derivee(double x)
+    double calculForward(vector<double> neurone, vector<double> entree);
+    vector<double> forward(vector<double> entree);
     void backward();
 };
 

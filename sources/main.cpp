@@ -25,7 +25,7 @@ int main() {
     EinsteinBis.showModel();
 
 
-    // vector< vector<float> > poids(3, vector<float> (5, 3.53));
+    // vector< vector<double> > poids(3, vector<double> (5, 3.53));
     // char *fileName = "test.txt";
 
     // File data(fileName);
@@ -37,7 +37,7 @@ int main() {
     // int count = 0;
     // for (auto line : poids) {
     //     cout << "W" << ++count;
-    //     for (float i : line) {
+    //     for (double i : line) {
     //         cout << '\t' << i;
     //     }
     //     cout << endl;

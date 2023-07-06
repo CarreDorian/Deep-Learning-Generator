@@ -8,14 +8,14 @@ void File::chargeFileName(char *newFileName) {
     fileName = newFileName;
 }
 
-vector< vector< vector<float> > > File::read() {
+vector< vector< vector<double> > > File::read() {
     ifstream file(fileName);
-    vector< vector< vector<float> > > poids;
-    vector< vector<float> > couche;
-    vector<float> sousCouche;
+    vector< vector< vector<double> > > poids;
+    vector< vector<double> > couche;
+    vector<double> sousCouche;
     int placeLine = 0;
     string line;
-    float nbr = 0, dizaine = 0;
+    double nbr = 0, dizaine = 0;
     
     while (std::getline(file, line)) {
         placeLine++;
@@ -31,7 +31,7 @@ vector< vector< vector<float> > > File::read() {
 
                 continue;
             }
-            float to_add;
+            double to_add;
 
             switch (carac) {
             case '\n':
@@ -75,7 +75,7 @@ vector< vector< vector<float> > > File::read() {
                 to_add = (carac - 48);
                 if (to_add < 0 || to_add > 9) {
                     cout << "ERROR : bad character in file : " << fileName << ":" << placeLine << ":" << placeCarac << "." << endl;
-                    return vector< vector< vector<float> > >();
+                    return vector< vector< vector<double> > >();
                 }
 
                 if (dizaine < 1) {
@@ -100,16 +100,16 @@ vector< vector< vector<float> > > File::read() {
     return poids;
 }
 
-void File::write(vector< vector< vector<float> > > poids) {
+void File::write(vector< vector< vector<double> > > poids) {
     ofstream file(fileName);
     int count = 1;
     
-    for (vector< vector<float> > coucheNeurones : poids) {
+    for (vector< vector<double> > coucheNeurones : poids) {
         file << "W" << count++;
-        for (vector<float> couche : coucheNeurones) {
+        for (vector<double> couche : coucheNeurones) {
             file << "\t";
             string str = "";
-            for (float neurone : couche) {
+            for (double neurone : couche) {
                 str += to_string(neurone) + ";";
             }
             str.erase(str.size() - 1); 
