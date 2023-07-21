@@ -17,7 +17,7 @@ vector< vector< vector<double> > > File::read() {
     string line;
     double nbr = 0, dizaine = 0;
     
-    while (std::getline(file, line)) {
+    while (getline(file, line)) {
         placeLine++;
         int placeCarac = 0;
 

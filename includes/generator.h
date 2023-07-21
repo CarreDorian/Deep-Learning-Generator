@@ -11,18 +11,20 @@
 double nbrAleatoire();
 
 class Generator : public File {
-protected:
+public:
     vector< vector< vector<double> > > reseau;
 
     using File::read;
     using File::write;
 
 public:
+    Generator();
     Generator(vector<int> model);
-    Generator(char *importReseau);
-    Generator(vector<int> model, char *importReseau);
-    void showModel();
+    Generator(char *nameImportReseau);
+    Generator(vector<int> model, char *nameImportReseau);
+    ~Generator();
     vector< vector< vector<double> > > getModel();
+    void showModel();
     void chargeModel(vector< vector< vector<double> > > newReseau);
     void chargeModel();
     void saveModel();

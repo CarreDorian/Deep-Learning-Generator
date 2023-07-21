@@ -8,6 +8,8 @@ double nbrAleatoire() {
     return distribution(Generator);
 }
 
+Generator::Generator() : File() {}
+
 Generator::Generator(vector<int> model) : File() {
     if (model.size() < 2) {
         cout << "ERROR : bad model ask. Too fiew level." << endl;
@@ -33,11 +35,11 @@ Generator::Generator(vector<int> model) : File() {
     }
 }
 
-Generator::Generator(char *importReseau) : File(importReseau) {
+Generator::Generator(char *nameImportReseau) : File(nameImportReseau) {
     chargeModel();
 }
 
-Generator::Generator(vector<int> model, char *importReseau) : File(importReseau) {
+Generator::Generator(vector<int> model, char *nameImportReseau) : File(nameImportReseau) {
     if (model.size() < 2) {
         cout << "ERROR : bad model ask. Too fiew level." << endl;
         return;
@@ -62,8 +64,14 @@ Generator::Generator(vector<int> model, char *importReseau) : File(importReseau)
     }
 }
 
+Generator::~Generator() {}
+
 void Generator::showModel() {
     int count = 1;
+    if (reseau.size() == 0) {
+        cout << "Empty" << endl;
+        return;
+    }
     
     for (vector< vector<double> > coucheNeurones : reseau) {
         cout << "W" << count++;

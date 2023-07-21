@@ -1,5 +1,104 @@
 #include "../includes/neurones.h"
 
+string printTypeById(string name) {
+
+    if (std::strlen(name.c_str()) > 1) {
+        if(name[0] == 'P' && name[1] == 'c') {
+            return "char*";
+        }
+        return "ERROR";
+    }
+
+    switch (name[0]) {
+        case 'i':
+            return "int";
+        case 'c':
+            return "char";
+        case 'd':
+            return "double";
+        case 'f':
+            return "float";
+        case 'l':
+            return "long";
+        case 'j':
+            return "unsigned int";
+        case 's':
+            return "short";
+        case 't':
+            return "unsigned short";
+        case 'x':
+            return "long long";
+        case 'y':
+            return "unsigned long long";
+        case 'b':
+            return "bool";
+        default:
+            return name;
+    }
+}
+
+template<typename T>
+void printType() {
+    string name = typeid(T).name();
+    printTypeById(name);
+}
+
+Neurone::Neurone(vector<int> model) : Generator() {
+    if (model.size() < 2) {
+        cout << "ERROR : bad model ask. Too fiew level." << endl;
+        return;
+    }
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<double> > couche;
+        
+        for (int i = 0; i < largeur; i++) {
+            vector<double> Generator;
+            for (int j = 0; j < entree; j++) {
+                Generator.push_back(nbrAleatoire());
+            }
+            couche.push_back(Generator);
+        }
+        reseau.push_back(couche);
+    }
+}
+
+Neurone::Neurone(char *nameImportReseau) : Generator(nameImportReseau) {
+    chargeModel();
+}
+
+Neurone::Neurone(vector<int> model, char *nameImportReseau) : Generator(nameImportReseau) {
+    if (model.size() < 2) {
+        cout << "ERROR : bad model ask. Too fiew level." << endl;
+        return;
+    }
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<double> > couche;
+        
+        for (int i = 0; i < largeur; i++) {
+            vector<double> Generator;
+            for (int j = 0; j < entree; j++) {
+                Generator.push_back(nbrAleatoire());
+            }
+            couche.push_back(Generator);
+        }
+        reseau.push_back(couche);
+    }
+}
+
+Neurone::~Neurone() {}
+
 double Neurone::sigmoide(double x) {
     if (x > 709)
         return 1;
@@ -31,20 +130,20 @@ vector<double> Neurone::forward(vector<double> entree) {
     }
     resultCouche.clear();
     resultCouche.push_back(entree);
-    int avancement = 0;
+    int avancement = 1;
 
     for (vector< vector<double> > couche : reseau) {
         resultCouche.push_back(vector<double> ());
         for (vector<double> neurone : couche) {
             resultCouche[avancement].push_back(Neurone::calculForward(neurone, entree));
         }
-        entree = resultCouche[avancement];
+        entree = resultCouche[avancement++];
     }
 
     return entree;
 }
 
-void Neurone::backward(vector<double> sortieAttendu) {
+void Neurone::backward(vector<double> &sortieAttendu) {
 
     for (int avancement = reseau.size() - 1, indexResult = resultCouche.size() - 1; avancement >= 0; avancement--) {
         vector<double> erreur;
@@ -60,10 +159,16 @@ void Neurone::backward(vector<double> sortieAttendu) {
         sortieAttendu = erreurDelta;
         --indexResult;
 
+        // cout << reseau[avancement].size() << "|";
         for (int indexNeurone = 0; indexNeurone < reseau[avancement].size(); indexNeurone++) {
+            // cout << reseau[avancement][indexNeurone].size();
             for (int index = 0; index < reseau[avancement][indexNeurone].size(); index++) {
-                reseau[avancement][indexNeurone][index] += resultCouche[indexResult][index] * erreurDelta[indexNeurone];
+                // cout << ":" << reseau[avancement][indexNeurone][index] << "->" << reseau[avancement][indexNeurone][index] + resultCouche[indexResult][index] * erreurDelta[indexNeurone];
+                // cout << endl << reseau[avancement][indexNeurone][index] << " + " << resultCouche[indexResult][index] << " * " << erreurDelta[indexNeurone];
+                reseau[avancement][indexNeurone][index] = reseau[avancement][indexNeurone][index] + resultCouche[indexResult][index] * erreurDelta[indexNeurone];
+                // cout << ":" << reseau[avancement][indexNeurone][index] << endl;
             }
+            // cout << endl;
         }
     }
 }
