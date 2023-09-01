@@ -92,12 +92,59 @@ vector< vector< vector<double> > > Generator::getModel() {
     return reseau;
 }
 
+void Generator::addToBeginReseau(vector<int> model) {
+    
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<double> > couche;
+        
+        for (int i = 0; i < largeur; i++) {
+            vector<double> Generator;
+            for (int j = 0; j < entree; j++) {
+                Generator.push_back(nbrAleatoire());
+            }
+            couche.push_back(Generator);
+        }
+        reseau.insert(reseau.begin(), couche);
+    }
+}
+
+void Generator::addToEndReseau(vector<int> model) {
+    
+    for (int step = 0; step < model.size() - 1; step++) {
+        int largeur = model[step + 1];
+        int entree = model[step];
+        
+        if (largeur < 1) {
+            cout << "ERROR : bad model ask. Too few neurons" << endl;
+            return;
+        }
+        vector< vector<double> > couche;
+        
+        for (int i = 0; i < largeur; i++) {
+            vector<double> Generator;
+            for (int j = 0; j < entree; j++) {
+                Generator.push_back(nbrAleatoire());
+            }
+            couche.push_back(Generator);
+        }
+        reseau.push_back(couche);
+    }
+}
+
 void Generator::chargeModel(vector< vector< vector<double> > > newReseau) {
     reseau = newReseau;
 }
 
 void Generator::chargeModel() {
-    reseau = read();
+    vector< vector< vector<double> > > model = read();
+    reseau.insert(reseau.end(), model.begin(), model.end());
 }
 
 void Generator::saveModel() {

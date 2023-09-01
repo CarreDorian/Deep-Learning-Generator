@@ -183,7 +183,169 @@ int mot_clef(char *arg) {
     return 0;
 }
 
+vector< pair< string, vector<int> > > setupDataset(vector< vector<double> > &toPredictData, vector< vector<double> > &outDataWait) {
+    toPredictData.clear();
+    outDataWait.clear();
+    vector< vector<string> > names;
+    if (1) { // ceci est pour cacher ces lignes interminables
+        vector<string> noms;
+
+        noms.push_back("puce");
+        noms.push_back("Bernard");
+        noms.push_back("Bernadette");
+        noms.push_back("Jack");
+        noms.push_back("Tulipe");
+        noms.push_back("Jean");
+        noms.push_back("Julie");
+        noms.push_back("Susane");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("fleure");
+        noms.push_back("jaqueline");
+        noms.push_back("Jacob");
+        noms.push_back("paul");
+        noms.push_back("Tulipette");
+        noms.push_back("Sogna");
+        noms.push_back("Morgane");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("radiateur");
+        noms.push_back("Phillipe");
+        noms.push_back("Paul");
+        noms.push_back("suson");
+        noms.push_back("Antoinette");
+        noms.push_back("Alice");
+        noms.push_back("Martine");
+        noms.push_back("Franck");
+        noms.push_back("Lionnel");
+        noms.push_back("Susette");
+        noms.push_back("Josianne");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("carbonne");
+        noms.push_back("Francois");
+        noms.push_back("Claudine");
+        noms.push_back("Sebastien");
+        noms.push_back("lucette");
+        noms.push_back("Laurent");
+        noms.push_back("Matilde");
+        noms.push_back("Pascale");
+        noms.push_back("Morgane");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("boulet");
+        noms.push_back("Fabien");
+        noms.push_back("Didier");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("sucette");
+        noms.push_back("George");
+        noms.push_back("Odile");
+        noms.push_back("Celine");
+        noms.push_back("Tulipe");
+        noms.push_back("Jean");
+        noms.push_back("Julie");
+        noms.push_back("Susane");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("bristol");
+        noms.push_back("Gaetan");
+        noms.push_back("Yan");
+        noms.push_back("Camille");
+        names.push_back(noms);
+        noms.clear();
+
+        noms.push_back("bruler");
+        noms.push_back("George");
+        noms.push_back("Augustin");
+        noms.push_back("Emilie");
+        names.push_back(noms);
+        noms.clear();
+    }
+
+    vector< pair< string, vector<int> > > data;
+
+    ifstream dataset("dataset/Dataset.csv");
+    int famille_index = 0, prenom_index = 1;
+    string name = names[famille_index][0] + " " + names[famille_index][prenom_index++];
+    pair< string, vector<int> > user = make_pair(name, vector<int>());
+    string line;
+    getline(dataset, line);
+
+    while (getline(dataset, line)) {
+        int dizaine = 0, nbr = 0;
+        for (char carac : line) {
+            if (dizaine == 0) {
+                if (carac == ',')
+                    dizaine++;
+                continue;
+            }
+
+            switch (carac) {
+                case ',':
+                    user.second.push_back(nbr);
+                    nbr = 0;
+                    dizaine = 1;
+                    break;
+
+                default:
+                    carac -= 48;
+                    if (carac < 0 || carac > 9) {
+                        cout << "ERROR : bad character in dataset" << endl;
+                        return vector< pair< string, vector<int> > >();
+                    }
+                    nbr += carac * dizaine;
+                    dizaine *= 10;
+            }
+        }
+        user.second.push_back(nbr);
+        nbr = 0;
+        dizaine = 0;
+        if (user.second.size() > 1) {
+            data.push_back(user);
+        }
+        user = make_pair(name, vector<int>());
+        if (names[famille_index].size() == prenom_index) {
+            prenom_index = 1;
+            if (++famille_index == names.size())
+                famille_index = 0;
+        }
+        name = names[famille_index][0] + " " + names[famille_index][prenom_index++];
+    }
+    
+    dataset.close();
+
+    for (auto element : data) {
+        int i = 0;
+        vector<double> vec;
+        while (i < 5) {
+            vec.push_back(static_cast<double>(element.second[i++]));
+        }
+        outDataWait.push_back(vec);
+
+        vec.clear();
+        while (i < 8) {
+            vec.push_back(static_cast<double>(element.second[i++]));
+        }
+        toPredictData.push_back(vec);
+    }  
+
+    return data;
+}
+
 int main(int argc, char **argv) {
+    ///////// Ces trois lignes sont a décommenter afin de tester sur mon dataset de test. /////////
+    // vector< vector<double> > toPredictData;
+    // vector< vector<double> > outDataWait;
+    // auto brutData = setupDataset(toPredictData, outDataWait);
+
+    Neurone Einstein();
 
     for (int i = 1; i < argc; i++) {
         char *arg = argv[i];
@@ -196,44 +358,18 @@ int main(int argc, char **argv) {
         }
     }
 
-    cout << "doit charger " << charge << "\nsauvegarder sous : " << save << "\ntrain " << train << "x times\ndoit-on ne pas auvegarder ? " << (delate ? "oui" : "non") << endl;
-
-    vector <vector <int> > vec;
-    vec.push_back(model);
-    vec.push_back(input);
-    for (auto v : vec) {
-        vector <vector <int> > count;
-        int av = -1;
-
-        for (auto n : v) {
-            if (av == -1) {
-                av++;
-                vector <int> j;
-                j.push_back(n);
-                j.push_back(1);
-                count.push_back(j);
-                continue;
-            }
-
-            if (count[av][0] == n) {
-                count[av][1]++;
-            }
-            else {
-                av++;
-                vector <int> j;
-                j.push_back(n);
-                j.push_back(1);
-                count.push_back(j);
-                continue;
-            }
-        }
-
-        cout << endl << "\n[\n";
-        for (auto nbr : count) {
-            cout << "\t" << nbr[1] << ":" << nbr[0] << ";\n";
-        }
-        cout << "]" << endl;
+    if (model.size() > 1) {
+        Neurone ia(model, save);
+        Einstein = ia;
+    } else if (charge != "") {
+        Neurone ia(model, save);
+        Einstein = ia;
+    } else {
+        cout << "no IA generated. Close. Goodbye !" << endl;
+        return 0;
     }
+
+
     
     return 0;
 }

@@ -25,6 +25,8 @@ public:
     ~Generator();
     vector< vector< vector<double> > > getModel();
     void showModel();
+    void addToBeginReseau(vector<int> model);
+    void addToEndReseau(vector<int> model);
     void chargeModel(vector< vector< vector<double> > > newReseau);
     void chargeModel();
     void saveModel();
