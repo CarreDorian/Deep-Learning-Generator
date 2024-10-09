@@ -16,6 +16,11 @@ vector< vector< vector<double> > > File::read() {
     int placeLine = 0;
     string line;
     double nbr = 0, dizaine = 0;
+
+    if (!file.good()) {
+        std::cout << "ERREUR : fichier " << fileName << " unfined" << std::endl;
+        return poids;
+    }
     
     while (getline(file, line)) {
         placeLine++;

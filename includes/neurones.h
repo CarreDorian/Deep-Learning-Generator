@@ -1,5 +1,12 @@
+#ifndef GENERETOR
+// GENERETOR sera défini dans l'include suivant
 #include "generator.h"
+#endif
+
+#ifndef INCLUDES
+// INCLUDES sera défini dans l'include suivant
 #include "includes.h"
+#endif
 
 #ifndef NEURONE
 #define NEURONE

@@ -1,4 +1,5 @@
 #include "../includes/neurones.h"
+#include "profile.cpp"
 
 // void printTypeById(string name) {
 
@@ -213,23 +214,41 @@ vector< pair< string, vector<int> > > setupDataset(vector< vector<double> > &toP
     return data;
 }
 
+
+
+int nbrAleatoire(int nbr_max) {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937_64 Generator(seed);
+    std::uniform_int_distribution<int> distribution(0, nbr_max - 1);
+
+    return distribution(Generator);
+}
+
 int main() {
     vector< vector<double> > toPredictData;
     vector< vector<double> > outDataWait;
     auto brutData = setupDataset(toPredictData, outDataWait);
 
-    vector<int> test(3,3);
+    vector<int> test(30,10);
+    test.insert(test.begin(), 3);
     test.push_back(5);
-    test.push_back(2);
-    test.push_back(5);
-    cout << "coucou" << endl;
-    Neurone Einstein("test.txt");
-    cout << "\nre" << endl;
+    Neurone Einstein(test);
     Einstein.showModel();
-    cout << endl;
+
     Einstein.entrainement(toPredictData, outDataWait);
     cout << endl;
-    Einstein.showModel();
+    // Einstein.showModel();
+
+    int random_nbr = nbrAleatoire(brutData.size());
+
+    cout << "try the model. He predict : " << endl;
+    auto prediction = Einstein.prediction(toPredictData[random_nbr]);
+
+    Profile user(brutData[random_nbr].first, prediction[0], prediction[1], prediction[2], prediction[3], prediction[4], brutData[random_nbr].second[5], brutData[random_nbr].second[6], brutData[random_nbr].second[7]);
+    user.affich();
+    cout << endl << "voici les véritables données :" << endl;
+    Profile realUser(brutData[random_nbr].first, brutData[random_nbr].second[0], brutData[random_nbr].second[1], brutData[random_nbr].second[2], brutData[random_nbr].second[3], brutData[random_nbr].second[4], brutData[random_nbr].second[5], brutData[random_nbr].second[6], brutData[random_nbr].second[7]);
+    realUser.affich();
     
     return 0;
 }

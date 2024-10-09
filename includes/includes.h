@@ -1,3 +1,5 @@
+#define INCLUDES
+
 #ifndef IOSTREAM
 #define IOSTREAM
 #include <iostream>
@@ -19,4 +21,7 @@ using namespace std;
 #include <fstream>
 #endif
 
-
+#ifndef NEURONE
+// NEURONE sera défini dans l'include suivant
+#include "neurones.h"
+#endif

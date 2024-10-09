@@ -1,5 +1,4 @@
 #include "../includes/includes.h"
-// #include <ctype.h>
 
 //////////////////////////// GLOBAL DEFINITION ////////////////////////////
 
@@ -10,11 +9,21 @@ int train = 0;
 
 bool delate = 0;
 
-char *charge = "default";
-char *save = "default";
+char *charge = "default.txt";
+char *save = "default.txt";
 
 
 /////////////////////////////////// END ///////////////////////////////////
+
+void print_help() {
+    cout << "====== help center ======" << endl;
+    cout << "  -c, --charge : charge the given model" << endl;
+    cout << "  -t, --train : train x times the model" << endl;
+    cout << "  -e, --execute : execute x times the model" << endl;
+    cout << "  -d, --delate : doesn't save the model" << endl;
+    cout << "  -s, --save : save the model in the given named" << endl;
+    cout << "  -h, --help : show this message" << endl << endl;
+}
 
 // ALERTE : change the word1 value
 bool is_word_equals(char *&word1, char *word2) {
@@ -113,6 +122,10 @@ void detect_letter_option(char *arg) {
         case 's':
             save = arg;
             break;
+
+        case 'h':
+            print_help();
+            break;
         }
     }
 }
@@ -139,6 +152,9 @@ void detect_word_option(char *arg) {
 
     } else if (is_word_equals(arg, "save")) {
         save = arg;
+
+    } else if (is_word_equals(arg, "help")) {
+        print_help();
     }
 }
 
@@ -345,7 +361,7 @@ int main(int argc, char **argv) {
     // vector< vector<double> > outDataWait;
     // auto brutData = setupDataset(toPredictData, outDataWait);
 
-    Neurone Einstein();
+    Neurone* Einstein = nullptr;
 
     for (int i = 1; i < argc; i++) {
         char *arg = argv[i];
@@ -359,17 +375,17 @@ int main(int argc, char **argv) {
     }
 
     if (model.size() > 1) {
-        Neurone ia(model, save);
+        Neurone* ia = new Neurone(model);
         Einstein = ia;
     } else if (charge != "") {
-        Neurone ia(model, save);
+        Neurone* ia = new Neurone(charge);
         Einstein = ia;
     } else {
         cout << "no IA generated. Close. Goodbye !" << endl;
         return 0;
     }
 
-
+    delete Einstein;
     
     return 0;
 }

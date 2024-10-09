@@ -68,34 +68,9 @@ Neurone::Neurone(vector<int> model) : Generator() {
     }
 }
 
-Neurone::Neurone(char *nameImportReseau) : Generator(nameImportReseau) {
-    chargeModel();
-}
+Neurone::Neurone(char *nameImportReseau) : Generator(nameImportReseau) {}
 
-Neurone::Neurone(vector<int> model, char *nameImportReseau) : Generator(nameImportReseau) {
-    if (model.size() < 2) {
-        cout << "ERROR : bad model ask. Too fiew level." << endl;
-        return;
-    }
-    for (int step = 0; step < model.size() - 1; step++) {
-        int largeur = model[step + 1];
-        int entree = model[step];
-        if (largeur < 1) {
-            cout << "ERROR : bad model ask. Too few neurons" << endl;
-            return;
-        }
-        vector< vector<double> > couche;
-        
-        for (int i = 0; i < largeur; i++) {
-            vector<double> Generator;
-            for (int j = 0; j < entree; j++) {
-                Generator.push_back(nbrAleatoire());
-            }
-            couche.push_back(Generator);
-        }
-        reseau.push_back(couche);
-    }
-}
+Neurone::Neurone(vector<int> model, char *nameImportReseau) : Generator(model, nameImportReseau) {}
 
 Neurone::~Neurone() {}
 

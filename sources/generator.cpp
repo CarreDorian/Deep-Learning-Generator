@@ -44,6 +44,7 @@ Generator::Generator(vector<int> model, char *nameImportReseau) : File(nameImpor
         cout << "ERROR : bad model ask. Too fiew level." << endl;
         return;
     }
+    vector< vector< vector<double> > > newReseau;
     for (int step = 0; step < model.size() - 1; step++) {
         int largeur = model[step + 1];
         int entree = model[step];
@@ -60,11 +61,20 @@ Generator::Generator(vector<int> model, char *nameImportReseau) : File(nameImpor
             }
             couche.push_back(Generator);
         }
-        reseau.push_back(couche);
+        newReseau.push_back(couche);
     }
+    chargeModel(newReseau);
+    chargeModel();
 }
 
 Generator::~Generator() {}
+
+void Generator::modelFusion(char *nameImportReseau) {
+    char *name = fileName;
+    fileName = nameImportReseau;
+    chargeModel();
+    fileName = name;
+}
 
 void Generator::showModel() {
     int count = 1;
@@ -139,11 +149,39 @@ void Generator::addToEndReseau(vector<int> model) {
 }
 
 void Generator::chargeModel(vector< vector< vector<double> > > newReseau) {
-    reseau = newReseau;
+    if (reseau.size() > 0 && newReseau.size() > 0) {
+        vector< vector<double> > couche = reseau.back();
+        vector< vector<double> > new_couche = newReseau[0];
+
+        if (couche.size() < 1) {
+            cout << "ERROR : can't add this two modules. The second caused don't got neurones" << endl;
+            return;
+        }
+        if (new_couche[0].size() != couche.size()) {
+            cout << "ERROR : can't add this two modules. They're not corresponding" << endl;
+            return;
+        }
+    }
+    reseau.insert(reseau.end(), newReseau.begin(), newReseau.end());
 }
 
 void Generator::chargeModel() {
     vector< vector< vector<double> > > model = read();
+
+    if (reseau.size() > 0 && model.size() > 0) {
+        vector< vector<double> > couche = reseau.back();
+        vector< vector<double> > new_couche = model[0];
+
+        if (couche.size() < 1) {
+            cout << "ERROR : can't add this two modules. The second caused don't got neurones" << endl;
+            return;
+        }
+        if (new_couche[0].size() != couche.size()) {
+            cout << "ERROR : can't add this two modules. They're not corresponding" << endl;
+            return;
+        }
+    }
+
     reseau.insert(reseau.end(), model.begin(), model.end());
 }
 

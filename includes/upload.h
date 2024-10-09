@@ -1,5 +1,5 @@
 #ifndef INCLUDES
-#define INCLUDES
+// INCLUDES sera défini dans l'include suivant
 #include "includes.h"
 #endif
 

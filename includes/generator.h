@@ -1,4 +1,7 @@
+#ifndef FILE
+// FILE sera défini dans l'include suivant
 #include "upload.h"
+#endif
 
 #ifndef RANDOM
 #define RANDOM
@@ -27,6 +30,7 @@ public:
     void showModel();
     void addToBeginReseau(vector<int> model);
     void addToEndReseau(vector<int> model);
+    void modelFusion(char *nameImportReseau);
     void chargeModel(vector< vector< vector<double> > > newReseau);
     void chargeModel();
     void saveModel();
